@@ -18,8 +18,6 @@ char *ft_strjoin(char const *s1, char const *s2)
 	int		i;
 	int		j;
 
-	if (s1 == NULL)
-		s1 = ""; // might by problematic with alloc
 	str = (char *)malloc(ft_strlen(s1)+ft_strlen(s2) + 1);
 	if (!str)
 		return (NULL);
@@ -35,13 +33,16 @@ char *ft_strjoin(char const *s1, char const *s2)
 		str[i++] = s2[j++];
 	}
 	str[i] = '\0';
+	//free((void *)s1);
+	//free((void *)s2);
+	//printf("string after joining is: %s", str);
 	return (str);
 }
 
 char *ft_strchr(const char *str, int z)
 {
 	int i;
-
+	printf("--looking for a new line---\n");
 	i = 0;
 	if	(!str)
 		return (NULL);
@@ -82,15 +83,32 @@ char *ft_beforenewline(char *str)
 
 char *ft_afternewline(char *str)
 {
-	while (*str)
+	size_t i;
+	size_t j;
+
+	char *after;
+
+	i = 0;
+	while (str[i] != '\n')
+		i++;
+
+	after = (char *)malloc(sizeof(char) * (ft_strlen(str) - i + 1));
+	if (!after)
+		return (NULL);
+	j = 0;
+	//printf("i is %ld", i);
+	//printf("strlen is %ld", ft_strlen(str));
+
+	while (i < ft_strlen(str))
 	{
-		if(*str == '\n')
-		{
-			return str+1;
-		}
-		str++;
+		//printf("str is %c\n", str[j]);
+		after[j] = str[i+1];
+		j++;
+		i++;
 	}
-	return str;
+	after[j] = '\0';
+	printf("Now after is: %s\n", after);
+	return (after);
 }
 
 

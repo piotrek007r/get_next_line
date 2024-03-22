@@ -1,104 +1,134 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pruszkie <pruszkie@student.42warsaw.pl>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/22 17:21:15 by pruszkie          #+#    #+#             */
+/*   Updated: 2024/03/22 18:30:30 by pruszkie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "get_next_line.h"
 
-// void ft_putstr(char *str)
-//{
-//	while (*str)
-//	{
-//		write(1, str, 1);
-//		str++;
-//	}
-//	write(1, "\n", 1); // need if statement for end of file
-// }
+static char    *ft_read(int fd, char *reminder, char *buffer);
+static char    *_set_line(char *line);
+static char    *ft_strchr(char *s, int c);
 
-char *ft_strdup(const char *str)
+    static char *reminder;
+char    *get_next_line(int fd)
 {
-	char *temp;
-	unsigned int counter;
+    char        *line;
+    char        *buffer;
 
-	temp = (char *)malloc(ft_strlen(str) + 1);
-	if (!temp)
-		return (NULL);
-	counter = 0;
-	while (str[counter])
-	{
-		temp[counter] = str[counter];
-		counter++;
-	}
-	temp[counter] = '\0';
-	return (temp);
+    buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+    if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0) // <-DELATE THIS
+    {
+        free(reminder);
+        free(buffer);
+        reminder = NULL;
+        buffer = NULL;
+        return (NULL);
+    }
+    if (!buffer)
+        return (NULL);
+    line = ft_read(fd, reminder, buffer);
+    free(buffer);
+    buffer = NULL;
+    if (!line)
+        return (NULL);
+    reminder = _set_line(line);
+    return (line);
 }
 
-char *ft_read(int fd)
+static char *_set_line(char *line_buffer)
 {
-	int bytes_read;
-	char *temp;
-	char *buffer;
-	char *line;
-	buffer = NULL;
-	line = NULL;
+    char    *reminder;
+    ssize_t    i;
 
-	while (1)
+    i = 0;
+
+    while (line_buffer[i] != '\n' && line_buffer[i] != '\0')
+        i++;
+
+    if (line_buffer[i] == 0 || line_buffer[1] == 0)
+        return (NULL);
+    reminder = ft_substr(line_buffer, i + 1, ft_strlen(line_buffer) - i);
+    if (*reminder == 0)
+    {
+        free(reminder);
+        reminder = NULL;
+    }
+
+    line_buffer[i + 1] = 0;
+    return (reminder);
+}
+
+static char	*ft_read(int fd, char *reminder, char *buffer)
+{
+	ssize_t	bytes_read;
+	char	*temp;
+
+	bytes_read = 1;
+	while (bytes_read > 0)
 	{
-		buffer = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (!buffer)
-			return (NULL);
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		buffer[bytes_read] = '\0';
-		if (!line)
-			line = ft_strdup(buffer);
-		else
+		// where is allocating for buffer
+		if (bytes_read == -1)
 		{
-			temp = line;
-			line = ft_strjoin(temp, buffer);
-			//free(temp);
-			temp = NULL;
+			free(reminder);
+			return (NULL);
 		}
-		if (ft_strchr(buffer, '\n') == NULL)
-		{
-			free(buffer);
-			buffer = NULL;
-		}
-		else
-		{
-			free(buffer);
-			buffer = NULL;
-			break;
-		}
+
+		else if (bytes_read == 0)
+			break ;
+		buffer[bytes_read] = 0;
+
+		if (!reminder)
+			reminder = ft_strdup("");
+		temp = reminder; // why here is no strdup
+		reminder = ft_strjoin(temp, buffer);
+		free(temp);
+		temp = NULL;
+
+		if (ft_strchr(buffer, '\n'))
+			break ;
 	}
-	return line;
+	return (reminder);
 }
 
-char *get_next_line(int fd)
+static char	*ft_strchr(char *s, int c)
 {
-	int bytes_read;
-	static char *reminder;
-	char *line;
-	char *linetoprint;
+	unsigned int	i;
+	char			cc;
 
-	line = ft_read(fd);
-
-	linetoprint = ft_beforenewline(line);
-	printf("Line ready to return: %s\n", linetoprint);
-	reminder = ft_afternewline(line);
-	printf("Now after has this: %s\n", reminder);
-
-	return (linetoprint);
-}
-
-int main()
-{
-	int fd;
-	int counter;
-
-	fd = open("test2.txt", O_RDONLY);
-	counter = 0;
-	while (counter < 1)
+	cc = (char) c;
+	i = 0;
+	while (s[i])
 	{
-		printf("FINAL OUTPUT %s", get_next_line(fd));
-		counter++;
+		if (s[i] == cc)
+			return ((char *) &s[i]);
+		i++;
 	}
-	close(fd);
+	if (s[i] == cc)
+		return ((char *) &s[i]);
+	return (NULL);
 }
 
-// if (bytes_read == 0)
+//int main()
+//{
+//	int fd;
+//	int counter;
+
+//	fd = open("test2.txt", O_RDONLY);
+//	counter = 0;
+//	while (counter < 4)
+//	{
+//		//printf("%i-", counter+1);
+//		printf("%i-FINAL OUTPUT %s\n\n",counter+1, get_next_line(fd));
+//		counter++;
+//	}
+//	free(reminder);
+//	close(fd);
+//}

@@ -1,4 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pruszkie <pruszkie@student.42warsaw.pl>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/03/22 17:26:18 by pruszkie          #+#    #+#             */
+/*   Updated: 2024/03/22 18:10:08 by pruszkie         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
+
+char *ft_strdup(const char *str)
+{
+	char *temp;
+	unsigned int counter;
+
+	temp = (char *)malloc(ft_strlen((char *)str) + 1);
+	if (!temp)
+		return (NULL);
+	counter = 0;
+	while (str[counter])
+	{
+		temp[counter] = str[counter];
+		counter++;
+	}
+	temp[counter] = '\0';
+	return (temp);
+}
 
 size_t	ft_strlen(const char *str)
 {
@@ -12,103 +42,52 @@ size_t	ft_strlen(const char *str)
 	return (counter);
 }
 
-char *ft_strjoin(char const *s1, char const *s2)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
+	size_t	i;
 	char	*str;
-	int		i;
-	int		j;
 
-	str = (char *)malloc(ft_strlen(s1)+ft_strlen(s2) + 1);
+	if (!s)
+		return (NULL);
+	if (start > ft_strlen(s))
+		return (malloc(1));
+	if (len > ft_strlen(s + start))
+		len = ft_strlen(s + start);
+	str = malloc((len + 1) * sizeof(char));
 	if (!str)
 		return (NULL);
 	i = 0;
-	while (s1[i])
+	while (i < len)
 	{
-		str[i] = s1[i];
+		str[i] = s[start + i];
 		i++;
 	}
-	j = 0;
-	while (s2[j])
-	{
-		str[i++] = s2[j++];
-	}
-	str[i] = '\0';
-	//free((void *)s1);
-	//free((void *)s2);
-	//printf("string after joining is: %s", str);
+	str[i] = 0;
 	return (str);
 }
 
-char *ft_strchr(const char *str, int z)
+char	*ft_strjoin(char *s1, char *s2)
 {
-	int i;
-	printf("--looking for a new line---\n");
-	i = 0;
-	if	(!str)
+	char			*res;
+
+	res = (char *) malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+	if (!res)
 		return (NULL);
-	while (str[i] && str[i] != (char)z)
-	{
-		i++;
-	}
-	if (str[i] == (char)z)
-	{
-		return ((char *)&str[i]);
-	}
-	return (NULL);
+	fill_str(res, s1, s2);
+	return (res);
 }
 
-char *ft_beforenewline(char *str)
+void	fill_str(char *res, char *s1, char *s2)
 {
-	size_t i;
-	size_t j;
-
-	char *before;
+	unsigned int	i;
+	unsigned int	j;
 
 	i = 0;
-	while (str[i] != '\n')
-		i++;
-
-	before = (char *)malloc(sizeof(char) * i + 1);
-	if (!before)
-		return (NULL);
 	j = 0;
-	while (j < i)
-	{
-		before[j] = str[j];
-		j++;
-	}
-	before[j] = '\0';
-	return (before);
-}
-
-char *ft_afternewline(char *str)
-{
-	size_t i;
-	size_t j;
-
-	char *after;
-
-	i = 0;
-	while (str[i] != '\n')
-		i++;
-
-	after = (char *)malloc(sizeof(char) * (ft_strlen(str) - i + 1));
-	if (!after)
-		return (NULL);
+	while (s1[j])
+		res[i++] = s1[j++];
 	j = 0;
-	//printf("i is %ld", i);
-	//printf("strlen is %ld", ft_strlen(str));
-
-	while (i < ft_strlen(str))
-	{
-		//printf("str is %c\n", str[j]);
-		after[j] = str[i+1];
-		j++;
-		i++;
-	}
-	after[j] = '\0';
-	printf("Now after is: %s\n", after);
-	return (after);
+	while (s2[j])
+		res[i++] = s2[j++];
+	res[i] = '\0';
 }
-
-

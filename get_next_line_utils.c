@@ -6,7 +6,7 @@
 /*   By: pruszkie <pruszkie@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 17:26:18 by pruszkie          #+#    #+#             */
-/*   Updated: 2024/03/22 18:10:08 by pruszkie         ###   ########.fr       */
+/*   Updated: 2024/03/25 12:13:18 by pruszkie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,28 +42,28 @@ size_t	ft_strlen(const char *str)
 	return (counter);
 }
 
-char	*ft_substr(char *s, unsigned int start, size_t len)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	size_t	i;
-	char	*str;
+	size_t	j;
+	char	*temp;
 
-	if (!s)
-		return (NULL);
-	if (start > ft_strlen(s))
-		return (malloc(1));
-	if (len > ft_strlen(s + start))
-		len = ft_strlen(s + start);
-	str = malloc((len + 1) * sizeof(char));
-	if (!str)
+	temp = (char *)malloc(sizeof(char) * len + 1);
+	if (!temp)
 		return (NULL);
 	i = 0;
-	while (i < len)
+	j = 0;
+	while (s[i])
 	{
-		str[i] = s[start + i];
+		if (i >= start && j < len)
+		{
+			temp[j] = s[i];
+			j++;
+		}
 		i++;
 	}
-	str[i] = 0;
-	return (str);
+	temp[j] = '\0';
+	return (temp);
 }
 
 char	*ft_strjoin(char *s1, char *s2)

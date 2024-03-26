@@ -74,7 +74,7 @@ static char *ft_read(int fd, char *reminder, char *buffer)
 
 		if (!reminder)
 			reminder = ft_strdup("");
-		temp = ft_strdup(reminder);
+		temp = reminder;
 		reminder = ft_strjoin(temp, buffer);
 		free(temp);
 		temp = NULL;
@@ -112,19 +112,19 @@ char *get_next_line(int fd)
 	return (line);
 }
 
-int main()
-{
-	int fd;
-	int counter;
+// int main()
+// {
+// 	int fd;
+// 	int counter;
 
-	fd = open("test2.txt", O_RDONLY);
-	counter = 0;
-	while (counter < 2)
-	{
-		// printf("%i-", counter+1);
-		printf("%i-FINAL OUTPUT %s\n\n", counter + 1, get_next_line(fd));
-		counter++;
-	}
-	//free(reminder);
-	close(fd);
-}
+// 	fd = open("test2.txt", O_RDONLY);
+// 	counter = 0;
+// 	while (counter < 2)
+// 	{
+// 		// printf("%i-", counter+1);
+// 		printf("%i-FINAL OUTPUT %s\n\n", counter + 1, get_next_line(fd));
+// 		counter++;
+// 	}
+// 	//free(reminder);
+// 	close(fd);
+// }

@@ -66,28 +66,55 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	return (temp);
 }
 
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char			*res;
+	char	*str;
+	int		i;
+	int		j;
 
-	res = (char *) malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-	if (!res)
+	str = (char *)malloc(ft_strlen(s1)+ft_strlen(s2) + 1);
+	if (!str)
 		return (NULL);
-	fill_str(res, s1, s2);
-	return (res);
-}
-
-void	fill_str(char *res, char *s1, char *s2)
-{
-	unsigned int	i;
-	unsigned int	j;
-
 	i = 0;
-	j = 0;
-	while (s1[j])
-		res[i++] = s1[j++];
+	while (s1[i])
+	{
+		str[i] = s1[i];
+		i++;
+	}
 	j = 0;
 	while (s2[j])
-		res[i++] = s2[j++];
-	res[i] = '\0';
+	{
+		str[i] = s2[j];
+		i++;
+		j++;
+	}
+	str[i] = '\0';
+	return (str);
 }
+
+
+// char	*ft_strjoin(char *s1, char *s2)
+// {
+// 	char			*res;
+
+// 	res = (char *) malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
+// 	if (!res)
+// 		return (NULL);
+// 	fill_str(res, s1, s2);
+// 	return (res);
+// }
+
+// void	fill_str(char *res, char *s1, char *s2)
+// {
+// 	unsigned int	i;
+// 	unsigned int	j;
+
+// 	i = 0;
+// 	j = 0;
+// 	while (s1[j])
+// 		res[i++] = s1[j++];
+// 	j = 0;
+// 	while (s2[j])
+// 		res[i++] = s2[j++];
+// 	res[i] = '\0';
+// }

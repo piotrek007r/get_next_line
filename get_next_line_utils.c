@@ -93,28 +93,18 @@ char	*ft_strjoin(char const *s1, char const *s2)
 }
 
 
-// char	*ft_strjoin(char *s1, char *s2)
-// {
-// 	char			*res;
+char	*ft_strchr(const char *str, int z)
+{
+	int	i;
 
-// 	res = (char *) malloc((ft_strlen(s1) + ft_strlen(s2) + 1) * sizeof(char));
-// 	if (!res)
-// 		return (NULL);
-// 	fill_str(res, s1, s2);
-// 	return (res);
-// }
-
-// void	fill_str(char *res, char *s1, char *s2)
-// {
-// 	unsigned int	i;
-// 	unsigned int	j;
-
-// 	i = 0;
-// 	j = 0;
-// 	while (s1[j])
-// 		res[i++] = s1[j++];
-// 	j = 0;
-// 	while (s2[j])
-// 		res[i++] = s2[j++];
-// 	res[i] = '\0';
-// }
+	i = 0;
+	while (str[i] && str[i] != (char)z)
+	{
+		i++;
+	}
+	if (str[i] == (char)z)
+	{
+		return ((char *)&str[i]);
+	}
+	return (NULL); // DELETE THIS CAST
+}

@@ -12,103 +12,73 @@
 
 #include "get_next_line.h"
 
-static char *ft_strchr(char *s, int c)
+static char	*reader(int fd, char *buffer, char *reminder)
 {
-	unsigned int i;
-	char cc;
-
-	cc = (char)c;
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] == cc)
-			return ((char *)&s[i]);
-		i++;
-	}
-	if (s[i] == cc)
-		return ((char *)&s[i]);
-	return (NULL);
-}
-
-static char *ft_returnline(char *line_buffer)
-{
-	char *reminder;
-	ssize_t i;
-
-	i = 0;
-
-	while (line_buffer[i] != '\n' && line_buffer[i] != '\0')
-		i++;
-
-	if (line_buffer[i] == 0 || line_buffer[1] == 0)
-		return (NULL);
-	reminder = ft_substr(line_buffer, i + 1, ft_strlen(line_buffer) - i);
-	if (*reminder == 0)
-	{
-		free(reminder);
-		reminder = NULL;
-	}
-
-	line_buffer[i + 1] = 0;
-	return (reminder);
-}
-
-static char *ft_read(int fd, char *reminder, char *buffer)
-{
-	ssize_t bytes_read;
+	int bytes_read;
 	char *temp;
 
-	bytes_read = 1;
-	while (bytes_read > 0)
+	while(1)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
-		{
-			free(reminder);
 			return (NULL);
-		}
-
-		else if (bytes_read == 0)
+		if (bytes_read == 0)
 			break;
-		buffer[bytes_read] = 0;
-
+		buffer[bytes_read] = 0; 
 		if (!reminder)
 			reminder = ft_strdup("");
 		temp = reminder;
 		reminder = ft_strjoin(temp, buffer);
-		free(temp);
+		free(temp); // last time free(temp) was in check for new line -SECOND ERROR
 		temp = NULL;
-
-		if (ft_strchr(buffer, '\n'))
+		if (ft_strchr(buffer, '\n') != NULL)
+		{
 			break;
+		}
 	}
+	return (reminder);
+}
+
+static char *splitreminder(char *line)
+{
+	char *reminder;
+	size_t nlindex;
+
+	nlindex = 0;
+	while (line[nlindex] != '\n' && line[nlindex] != '\0')
+		nlindex++;
+	if (line[nlindex] == 0 || line[1] == 0) // forgot about this check -THIRD ERROR
+		return (NULL);
+	reminder = ft_substr(line, nlindex + 1, ft_strlen(line) - nlindex); 
+	if (*reminder == 0) // forgot to check for end of file -FOURTH ERROR
+	{
+		free(reminder);
+		reminder = NULL;
+	}
+	line[nlindex + 1] = '\0';
 	return (reminder);
 }
 
 char *get_next_line(int fd)
 {
-	static char *reminder;
-	char *line;
-	char *buffer;
+static char	*reminder;
+char		*buffer;
+char 		*line;
 
-	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
-	if (fd < 0 || BUFFER_SIZE <= 0) //
+buffer = (char *)malloc(sizeof(char)*BUFFER_SIZE+1);
+if (!buffer)
+	return (NULL);
+if (fd < 0 || BUFFER_SIZE <= 0)
 	{
-		free(reminder);
 		free(buffer);
-		reminder = NULL;
-		buffer = NULL;
 		return (NULL);
 	}
-	if (!buffer)
-		return (NULL);
-	line = ft_read(fd, reminder, buffer);
-
+	line = reader(fd, buffer, reminder);
 	free(buffer);
-	buffer = NULL;
-	if (!line)
+	buffer = NULL; 
+	if (!line) // forgot to do this check -FIRST ERROR FROM 27.03
 		return (NULL);
-	reminder = ft_returnline(line);
+	reminder = splitreminder(line);
 	return (line);
 }
 
@@ -117,9 +87,9 @@ char *get_next_line(int fd)
 // 	int fd;
 // 	int counter;
 
-// 	fd = open("test2.txt", O_RDONLY);
+// 	fd = open("test.txt", O_RDONLY);
 // 	counter = 0;
-// 	while (counter < 2)
+// 	while (counter < 3)
 // 	{
 // 		// printf("%i-", counter+1);
 // 		printf("%i-FINAL OUTPUT %s\n\n", counter + 1, get_next_line(fd));

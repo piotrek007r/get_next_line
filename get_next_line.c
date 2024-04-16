@@ -6,7 +6,7 @@
 /*   By: pruszkie <pruszkie@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 17:21:15 by pruszkie          #+#    #+#             */
-/*   Updated: 2024/03/25 18:35:09 by pruszkie         ###   ########.fr       */
+/*   Updated: 2024/03/28 11:51:24 by pruszkie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,41 @@
 
 static char	*reader(int fd, char *buffer, char *reminder)
 {
-	int bytes_read;
-	char *temp;
+	int		bytes_read;
+	char	*temp;
 
-	while(1)
+	while (1)
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1)
 			return (NULL);
 		if (bytes_read == 0)
-			break;
-		buffer[bytes_read] = 0; 
+			break ;
+		buffer[bytes_read] = 0;
 		if (!reminder)
 			reminder = ft_strdup("");
 		temp = reminder;
 		reminder = ft_strjoin(temp, buffer);
-		free(temp); // last time free(temp) was in check for new line -SECOND ERROR
+		free(temp);
 		temp = NULL;
 		if (ft_strchr(buffer, '\n') != NULL)
-		{
-			break;
-		}
+			break ;
 	}
 	return (reminder);
 }
 
-static char *splitreminder(char *line)
+static char	*splitreminder(char *line)
 {
-	char *reminder;
-	size_t nlindex;
+	char	*reminder;
+	size_t	nlindex;
 
 	nlindex = 0;
 	while (line[nlindex] != '\n' && line[nlindex] != '\0')
 		nlindex++;
-	if (line[nlindex] == 0 || line[1] == 0) // forgot about this check -THIRD ERROR
+	if (line[nlindex] == 0 || line[1] == 0)
 		return (NULL);
-	reminder = ft_substr(line, nlindex + 1, ft_strlen(line) - nlindex); 
-	if (*reminder == 0) // forgot to check for end of file -FOURTH ERROR
+	reminder = ft_substr(line, nlindex + 1, ft_strlen(line) - nlindex);
+	if (*reminder == 0)
 	{
 		free(reminder);
 		reminder = NULL;
@@ -59,24 +57,24 @@ static char *splitreminder(char *line)
 	return (reminder);
 }
 
-char *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-static char	*reminder;
-char		*buffer;
-char 		*line;
+	static char		*reminder;
+	char			*buffer;
+	char			*line;
 
-buffer = (char *)malloc(sizeof(char)*BUFFER_SIZE+1);
-if (!buffer)
-	return (NULL);
-if (fd < 0 || BUFFER_SIZE <= 0)
+	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (!buffer)
+		return (NULL);
+	if (fd < 0 || BUFFER_SIZE <= 0)
 	{
 		free(buffer);
 		return (NULL);
 	}
 	line = reader(fd, buffer, reminder);
 	free(buffer);
-	buffer = NULL; 
-	if (!line) // forgot to do this check -FIRST ERROR FROM 27.03
+	buffer = NULL;
+	if (!line)
 		return (NULL);
 	reminder = splitreminder(line);
 	return (line);

@@ -6,16 +6,16 @@
 /*   By: pruszkie <pruszkie@student.42warsaw.pl>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/22 17:26:18 by pruszkie          #+#    #+#             */
-/*   Updated: 2024/03/25 12:13:18 by pruszkie         ###   ########.fr       */
+/*   Updated: 2024/03/28 11:52:56 by pruszkie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char *ft_strdup(const char *str)
+char	*ft_strdup(const char *str)
 {
-	char *temp;
-	unsigned int counter;
+	char			*temp;
+	unsigned int	counter;
 
 	temp = (char *)malloc(ft_strlen((char *)str) + 1);
 	if (!temp)
@@ -92,7 +92,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (str);
 }
 
-
 char	*ft_strchr(const char *str, int z)
 {
 	int	i;
@@ -106,5 +105,5 @@ char	*ft_strchr(const char *str, int z)
 	{
 		return ((char *)&str[i]);
 	}
-	return (NULL); // DELETE THIS CAST
+	return (NULL);
 }

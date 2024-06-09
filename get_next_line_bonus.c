@@ -1,4 +1,4 @@
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_join_buffer(char *buffer, char *leftoov, int fd)
 {
@@ -41,7 +41,7 @@ char	*ft_split_line(char *line)
 
 char	*get_next_line(int fd)
 {
-	static char	*leftoov;
+	static char	*leftoov[FDS];
 	char		*line;
 	char		*buffer;
 
@@ -53,27 +53,37 @@ char	*get_next_line(int fd)
 		free(buffer);
 		return (NULL);
 	}
-	line = ft_join_buffer(buffer, leftoov, fd);
+	line = ft_join_buffer(buffer, leftoov[fd], fd);
 	free(buffer);
 	if (!line)
 		return (NULL);
-	leftoov = ft_split_line(line);
+	leftoov[fd] = ft_split_line(line);
 	return (line);
 }
 
-// int main()
+// int	main(void)
 // {
-// 	int fd;
-// 	int counter;
+// 	int	arr[3];
+// 	int i;
+// 	char *line;
 
-// 	fd = open("file1.txt", O_RDONLY);
-// 	counter = 0;
-// 	while (counter < 3)
+// 	arr[0] = open("file1.txt", O_RDONLY);
+// 	arr[1] = open("file2.txt", O_RDONLY);
+// 	arr[2] = open("file3.txt", O_RDONLY);
+
+// 	i = 0;
+// 	while (i < 5)
 // 	{
-// 		// printf("%i-", counter+1);
-// 		printf("%i-FINAL OUTPUT %s\n\n", counter + 1, get_next_line(fd));
-// 		counter++;
+
+// 		printf("call num: %d\n", i);
+// 		line = get_next_line(arr[0]);
+// 		printf("line: %s\n", line);
+// 		line = get_next_line(arr[1]);
+// 		// printf("line: %s\n", line);
+// 		line = get_next_line(arr[2]);
+// 		// printf("line: %s\n", line);
+// 		// printf("----------------------------");
+// 		i++;
 // 	}
-// 	// free(reminder);
-// 	close(fd);
+// 	close(arr[0]);
 // }
